@@ -22,3 +22,6 @@ issues <- map_dfr(issues$items, function(issue){
 })
 
 readr::write_rds(issues, "data/issues.Rda")
+
+
+# gh::gh("GET /repos/tidyverse/tidyr/issues/665/comments")
