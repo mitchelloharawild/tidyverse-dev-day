@@ -133,8 +133,10 @@ function(session, input, output) {
   output$tbl_issues <- DT::renderDT({
     issues %>% 
       transmute(Repo = sub("https://api.github.com/repos/", "", repository_url), 
-                Title = title, Submitter = map_chr(user, "login"),
-                State = state, Created = as_datetime(created_at)) %>% 
-      separate(Repo, c("Organisation", "Package"), sep = "/")
+                Title = title, Submitter = factor(map_chr(user, "login")),
+                State = factor(state), Created = as_datetime(created_at)) %>% 
+      separate(Repo, c("Organisation", "Package"), sep = "/") %>% 
+      mutate(Organisation = factor(Organisation), Package = factor(Package)) %>% 
+      DT::datatable(filter = "top")
   })
 }
