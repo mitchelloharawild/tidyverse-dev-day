@@ -1,13 +1,17 @@
 issues <- readr::read_rds("data/issues.Rda")
+library(dplyr)
+library(purrr)
+library(lubridate)
+library(tidyr)
 
 function(session, input, output) {
-  showModal(
-    modalDialog(
-      title = "Welcome to the tidyverse developer day!",
-      easyClose = TRUE,
-      footer = modalButton("Get started!")
-    )
-  )
+  # showModal(
+  #   modalDialog(
+  #     title = "Welcome to the tidyverse developer day!",
+  #     easyClose = TRUE,
+  #     footer = modalButton("Get started!")
+  #   )
+  # )
 
   # Dashboard Boxes ---------------------------------------------------------
   # observe({
@@ -133,10 +137,17 @@ function(session, input, output) {
   output$tbl_issues <- DT::renderDT({
     issues %>% 
       transmute(Repo = sub("https://api.github.com/repos/", "", repository_url), 
-                Title = title, Submitter = factor(map_chr(user, "login")),
-                State = factor(state), Created = as_datetime(created_at)) %>% 
+                Number = number, Title = title,
+                Submitter = factor(map_chr(user, "login")),
+                State = factor(state), Created = as_datetime(created_at),
+                `Last active` = as_datetime(updated_at)) %>% 
       separate(Repo, c("Organisation", "Package"), sep = "/") %>% 
       mutate(Organisation = factor(Organisation), Package = factor(Package)) %>% 
-      DT::datatable(filter = "top")
+      DT::datatable(filter = "top", callback = htmlwidgets::JS("
+  table.on('click', 'tr', function() {
+    var td = $(this), row = table.row(td.closest('tr'));
+    window.open('https://github.com/' + row.data()[1] + '/' + row.data()[2] + '/issues/' + row.data()[3]);
+  });"
+      ))
   })
 }
