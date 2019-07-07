@@ -4,13 +4,12 @@ library(lubridate)
 library(tidyr)
 
 function(session, input, output) {
-  gh_issues <- reactive({
-    if(!file.exists("data/issues.Rda")){
-      source("R/data.R")
-    }
-    readr::read_rds("data/issues.Rda")
+  observeEvent(input$btn_update, {
+    source("R/data.R")
   })
-
+  
+  gh_issues <- reactiveFileReader(1000, session, "data/issues.Rda", readr::read_rds)
+  
   output$tbl_issues <- DT::renderDT({
     gh_issues() %>% 
       transmute(Repo = sub("https://api.github.com/repos/", "", repository_url), 
