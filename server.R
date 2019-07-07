@@ -3,6 +3,10 @@ library(purrr)
 library(lubridate)
 library(tidyr)
 
+if(!file.exists("data/issues.Rda")){
+  source("R/data.R")
+}
+
 function(session, input, output) {
   observeEvent(input$btn_update, {
     source("R/data.R")
