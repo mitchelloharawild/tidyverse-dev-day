@@ -143,11 +143,27 @@ function(session, input, output) {
                 `Last active` = as_datetime(updated_at)) %>% 
       separate(Repo, c("Organisation", "Package"), sep = "/") %>% 
       mutate(Organisation = factor(Organisation), Package = factor(Package)) %>% 
-      DT::datatable(filter = "top", callback = htmlwidgets::JS("
-  table.on('click', 'tr', function() {
-    var td = $(this), row = table.row(td.closest('tr'));
-    window.open('https://github.com/' + row.data()[1] + '/' + row.data()[2] + '/issues/' + row.data()[3]);
-  });"
-      ))
+      DT::datatable(
+        filter = "top", 
+        options = list(
+          autoWidth = TRUE,
+          paging = FALSE,
+          scrollY = "650px",
+          columnDefs = list(
+            list(width = '50px', targets = 1),
+            list(width = '50px', targets = 2),
+            list(width = '30px', targets = 3),
+            list(width = '50px', targets = 5),
+            list(width = '30px', targets = 6)
+          ),
+          sDom  = '<"top">lrt<"bottom">ip'
+        ),
+        selection = "single",
+        callback = htmlwidgets::JS("
+          table.on('click', 'tr', function() {
+            var td = $(this), row = table.row(td.closest('tr'));
+            window.open('https://github.com/' + row.data()[1] + '/' + row.data()[2] + '/issues/' + row.data()[3]);
+          });"
+        ))
   })
 }
