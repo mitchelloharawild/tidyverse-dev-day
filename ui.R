@@ -2,20 +2,31 @@ library(shiny)
 library(shinydashboard)
 
 dashboardPage(
-  title = "tidyverse-dev-day",
+  title = "tidyverse developer day",
   skin  = "blue",
   dashboardHeader(
-    title = "tidyverse-dev-day"
+    title = "Developer day"
   ),
 
   # Dashboard Sidebar -------------------------------------------------------
   dashboardSidebar(
+    img(src="https://www.tidyverse.org/images/tidyverse-default.png", width = "100%"),
     sidebarMenu(
-      menuItem("Issues", tabName = "tab_issues", icon = icon("dashboard"))
+      menuItem("Issue tracker", tabName = "tab_issues", icon = icon("search")),
+      tags$li(
+        actionLink("btn_update",
+                   style = "margin: 0;",
+                   label = NULL,
+                   class = "",
+                   icon("refresh"),
+                   span("Update data")
+        )
+      )
     )
   ),
 
   dashboardBody(
+    includeCSS("www/tdd.css"),
     tabItems(
 
       tabItem(
@@ -23,7 +34,6 @@ dashboardPage(
         fluidRow(
           box(
             width = 12,
-            title = "Issues",
             withSpinner(DT::DTOutput("tbl_issues"))
           )
           
