@@ -19,7 +19,9 @@ function(session, input, output) {
       transmute(Repo = sub("https://api.github.com/repos/", "", repository_url), 
                 Number = number, Title = title,
                 Submitter = factor(map_chr(user, "login")),
-                State = factor(state), Created = as_datetime(created_at),
+                State = factor(state), 
+                Type = map(pull_request, ~ if(is.null(.)) "Issue" else "Pull"),
+                Created = as_datetime(created_at),
                 `Last active` = as_datetime(updated_at)) %>% 
       separate(Repo, c("Organisation", "Package"), sep = "/") %>% 
       mutate(Organisation = factor(Organisation), Package = factor(Package)) %>% 
