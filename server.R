@@ -20,7 +20,7 @@ function(session, input, output) {
                 Number = number, Title = title,
                 Submitter = factor(map_chr(user, "login")),
                 State = factor(state), 
-                Type = map(pull_request, ~ if(is.null(.)) "Issue" else "Pull"),
+                Type = factor(map_chr(pull_request, ~ if(is.null(.)) "Issue" else "Pull")),
                 Created = as_datetime(created_at),
                 `Last active` = as_datetime(updated_at)) %>% 
       separate(Repo, c("Organisation", "Package"), sep = "/") %>% 
