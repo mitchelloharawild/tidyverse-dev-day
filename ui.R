@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(shinycssloaders)
 
 dashboardPage(
   title = "tidyverse developer day",
